@@ -7,11 +7,13 @@ var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
+var score;
 
 var gameState = "onSling";
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    getBackgroundImg();
+    //backgroundImg = loadImage("sprites/bg.png");
 }
 
 function setup(){
@@ -19,7 +21,8 @@ function setup(){
     engine = Engine.create();
     world = engine.world;
 
-
+    score=0;
+    
     ground = new Ground(600,height,1200,20);
     platform = new Ground(150, 305, 300, 170);
 
@@ -45,6 +48,7 @@ function setup(){
 }
 
 function draw(){
+if(backgroundImg)
     background(backgroundImg);
     Engine.update(engine);
     //strokeWeight(4);
@@ -52,11 +56,14 @@ function draw(){
     box2.display();
     ground.display();
     pig1.display();
+    pig1.score();
+    
     log1.display();
 
     box3.display();
     box4.display();
     pig3.display();
+    pig3.score();
     log3.display();
 
     box5.display();
@@ -66,7 +73,12 @@ function draw(){
     bird.display();
     platform.display();
     //log6.display();
-    slingshot.display();    
+    slingshot.display();  
+    textSize(35);
+    fill("black")
+    text("Score :"+ score,width-200,50);
+
+
 }
 
 function mouseDragged(){
@@ -85,4 +97,25 @@ function keyPressed(){
     if(keyCode === 32){
        // slingshot.attach(bird.body);
     }
+}
+
+
+async function getBackgroundImg(){
+
+var response = await fetch("http://worldtimeapi.org/api/timezone/Europe/Berlin");
+var responseJSON = await response.json();
+
+var time=responseJSON.datetime;
+var hour=time.slice(11,13);
+
+if(hour>=06 && hour<=19){
+bg="sprites/bg2.jpg"
+
+
+}
+else{
+bg="sprites/bg.png"
+}
+backgroundImg=loadImage(bg);
+
 }
